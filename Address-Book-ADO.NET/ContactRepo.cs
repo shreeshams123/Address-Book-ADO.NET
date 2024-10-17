@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Threading;
 namespace Address_Book_ADO.NET
 {
     public class ContactRepo
@@ -92,6 +93,38 @@ namespace Address_Book_ADO.NET
                 }
 
             }
+        }
+        public void DeleteContact(string firstname, string lastname)
+        {
+            string query1 = @"Select count(*) from Contacts where FirstName=@FirstName and LastName=@LastName";
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query1, con))
+                {
+                    cmd.Parameters.AddWithValue("@FirstName", firstname);
+                    cmd.Parameters.AddWithValue("@LastName", lastname);
+                    int count=(int)cmd.ExecuteNonQuery ();
+                    if (count>0)
+                    {
+                        Console.WriteLine("Contact not found");
+                        return;
+                    }
+                }
+            }
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query2 = @"Delete from Contacts where FirstName=@FirstName and LastName=@LastName";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query1, con))
+                {
+                    cmd.Parameters.AddWithValue("@FirstName", firstname);
+                    cmd.Parameters.AddWithValue("@LastName", lastname);
+                    cmd.ExecuteNonQuery() ;
+                    Console.WriteLine("Contact deleted successfully");
+                }
+            }
+            
         }
     }
 }

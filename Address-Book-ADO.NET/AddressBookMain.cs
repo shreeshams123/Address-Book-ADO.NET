@@ -12,8 +12,11 @@ namespace Address_Book_ADO.NET
             bool flag = true;
             while (flag)
             {
+                Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("MENU");
-                Console.WriteLine("1.Add contact\n2.Update Contact");
+                Console.WriteLine("- - - - - - - - - - - - -");
+                Console.WriteLine("1.Add contact\n2.Update Contact\n3.Delete Contact");
+                Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("Enter your choice");
                 int choice=Convert.ToInt32(Console.ReadLine());
                 switch (choice)
@@ -57,6 +60,12 @@ namespace Address_Book_ADO.NET
                         Console.WriteLine("Enter Email");
                         string email1=Console.ReadLine();
                         contactRepo.UpdateContact(firstname1 , lastname1, newfirstname,newlastname,address1,city1,state1,zip1,phone1,email1);   
+                        break;
+                    case 3: Console.WriteLine("Enter the firstname");
+                        string firstname2=Console.ReadLine();
+                        Console.WriteLine("Enter the lastname");
+                        string lastname2=Console.ReadLine();
+                        contactRepo.DeleteContact(firstname2, lastname2);
                         break;
 
                 }
