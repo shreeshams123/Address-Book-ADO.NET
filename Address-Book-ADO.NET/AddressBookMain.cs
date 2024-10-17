@@ -13,7 +13,7 @@ namespace Address_Book_ADO.NET
             while (flag)
             {
                 Console.WriteLine("MENU");
-                Console.WriteLine("1.Add contact");
+                Console.WriteLine("1.Add contact\n2.Update Contact");
                 Console.WriteLine("Enter your choice");
                 int choice=Convert.ToInt32(Console.ReadLine());
                 switch (choice)
@@ -35,6 +35,28 @@ namespace Address_Book_ADO.NET
                         Console.WriteLine("Enter email id");
                         string email= Console.ReadLine();
                         contactRepo.AddContacts(firstname, lastname, address, city, state, zip, phone, email);
+                        break;
+                    case 2: Console.WriteLine("Enter the firstname of the contact to be updated");
+                        string firstname1=Console.ReadLine();
+                        Console.WriteLine("Enter the lastname of the contact to update");
+                        string lastname1=Console.ReadLine();
+                        Console.WriteLine("Enter the new first name");
+                        string newfirstname=Console.ReadLine();
+                        Console.WriteLine("Enter the new last name");
+                        string newlastname=Console.ReadLine();
+                        Console.WriteLine("Enter address");
+                        string address1=Console.ReadLine();
+                        Console.WriteLine("Enter the city");
+                        string city1=Console.ReadLine();
+                        Console.WriteLine("Enter state");
+                        string state1=Console.ReadLine();
+                        Console.WriteLine("Enter Zip");
+                        int zip1=Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("Enter phone number");
+                        long phone1= Convert.ToInt64(Console.ReadLine());
+                        Console.WriteLine("Enter Email");
+                        string email1=Console.ReadLine();
+                        contactRepo.UpdateContact(firstname1 , lastname1, newfirstname,newlastname,address1,city1,state1,zip1,phone1,email1);   
                         break;
 
                 }
