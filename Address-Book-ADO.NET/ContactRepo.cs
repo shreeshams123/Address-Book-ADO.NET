@@ -220,5 +220,57 @@ namespace Address_Book_ADO.NET
                 }
             }
         }
+        public void ViewByCity()
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"SELECT City, FirstName, LastName FROM Contacts ORDER BY City ";
+                con.Open();
+                using(SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        string CurrentCity = null;
+                        while (reader.Read())
+                        {
+                            string city = reader["City"].ToString();
+                            if (city != CurrentCity)
+                            {
+                                CurrentCity = city;
+                                Console.WriteLine("CITY: "+reader["City"]);
+                                Console.WriteLine("---------------");
+                            }
+                            Console.WriteLine(reader["FirstName"]+" " + reader["LastName"]);
+                        }
+                    }
+                }
+            }
+        }
+        public void ViewByState()
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select State,FirstName,LastName from Contacts order by State";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    con.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        string CurrentState = null;
+                        while (reader.Read())
+                        {
+                            string state = reader["State"].ToString();
+                            if (state != CurrentState)
+                            {
+                                CurrentState = state;
+                                Console.WriteLine("State: " + state);
+                                Console.WriteLine("---------------");
+                            }
+                            Console.WriteLine(reader["FirstName"]+" "+reader["LastName"]);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

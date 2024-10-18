@@ -30,7 +30,7 @@ namespace Address_Book_ADO.NET
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("MENU");
                 Console.WriteLine("- - - - - - - - - - - - -");
-                Console.WriteLine("1.Add Address Book\n2.Delete Address Book\n3.Add contact\n4.Update Contact\n5.Delete Contact\n6.Search By City\n7.Search By State");
+                Console.WriteLine("1.Add Address Book\n2.Delete Address Book\n3.Add contact\n4.Update Contact\n5.Delete Contact\n6.Search By City\n7.Search By State\n8.View By City\n9.View By State");
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("Enter your choice");
                 int choice=Convert.ToInt32(Console.ReadLine());
@@ -101,6 +101,10 @@ namespace Address_Book_ADO.NET
                     case 7: Console.WriteLine("Enter the state");
                         string state2= Console.ReadLine();
                         contactRepo.SearchByState(state2);
+                        break;
+                    case 8: contactRepo.ViewByCity();
+                        break;
+                    case 9: contactRepo.ViewByState();
                         break;
                 }
                 
