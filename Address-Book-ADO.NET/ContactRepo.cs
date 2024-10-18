@@ -314,5 +314,46 @@ namespace Address_Book_ADO.NET
                 }
             }
         }
+        public void OrderByName(string addressbookname)
+        {
+            if (AddressRepo.AddressBookPresent(addressbookname))
+            {
+                using (SqlConnection con = new SqlConnection(connectionstring))
+                {
+                    string query = @"Select count(*) from Contacts where AddressBookName=@AddressBookName";
+                    con.Open();
+                    using(SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@AddressBookName",addressbookname);
+                        int count = (int)cmd.ExecuteScalar();
+                        if (count <= 0)
+                        {
+                            Console.WriteLine("There are no contacts in this addressbook");
+                            return;
+                        }
+                    }
+                }
+                using (SqlConnection con = new SqlConnection(connectionstring))
+                {
+                    string query = @"Select AddressBookName,FirstName,LastName from Contacts where AddressBookName=@AddressBook order by FirstName";
+                    con.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("AddressBook", addressbookname);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Address book not present");
+            }
+        }
     }
 }
