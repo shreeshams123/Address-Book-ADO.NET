@@ -152,5 +152,73 @@ namespace Address_Book_ADO.NET
             }
             
         }
+        public void SearchByCity(string city)
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select count(*) from Contacts where City=@City";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@City", city);
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count <= 0)
+                    {
+                        Console.WriteLine("No contacts in this city");
+                        return;
+                    }
+                }
+            }
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select FirstName,LastName from Contacts where City=@City ";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@City", city);
+                   using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine(reader["FirstName"]+" " + reader["LastName"]);
+                        }
+                    }
+                }
+            }
+        }
+        public void SearchByState(string state)
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select count(*) from Contacts where State=@State";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@State", state);
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count <= 0)
+                    {
+                        Console.WriteLine("No Contacts in this state");
+                        return;
+                    }
+                }
+            }
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select FirstName,LastName from Contacts where State=@State ";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@State", state);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
