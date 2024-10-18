@@ -41,7 +41,23 @@ namespace Address_Book_ADO.NET
             }
         }
         
-        
+        public bool ContactsPresentInAddBook(string addressbookname)
+        {
+            int count;
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select count(*) from Contacts where AddressBookName=@AddressBookName";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@AddressBookName", addressbookname);
+                    count = (int)cmd.ExecuteScalar();
+                }
+                    if (count <= 0) 
+                        return false;
+                        }
+                return true;
+        }
         public void AddContacts(string firstname,string lastname,string address,string city,string state,int zip,long phone,string email,string addressbookname)
         {
             if (!ContactPresent(firstname, lastname))
@@ -318,36 +334,151 @@ namespace Address_Book_ADO.NET
         {
             if (AddressRepo.AddressBookPresent(addressbookname))
             {
-                using (SqlConnection con = new SqlConnection(connectionstring))
+                if (ContactsPresentInAddBook(addressbookname))
                 {
-                    string query = @"Select count(*) from Contacts where AddressBookName=@AddressBookName";
-                    con.Open();
-                    using(SqlCommand cmd = new SqlCommand(query, con))
+                    using (SqlConnection con = new SqlConnection(connectionstring))
                     {
-                        cmd.Parameters.AddWithValue("@AddressBookName",addressbookname);
-                        int count = (int)cmd.ExecuteScalar();
-                        if (count <= 0)
+                        string query = @"Select AddressBookName,FirstName,LastName from Contacts where AddressBookName=@AddressBook order by FirstName";
+                        con.Open();
+                        using (SqlCommand cmd = new SqlCommand(query, con))
                         {
-                            Console.WriteLine("There are no contacts in this addressbook");
-                            return;
-                        }
-                    }
-                }
-                using (SqlConnection con = new SqlConnection(connectionstring))
-                {
-                    string query = @"Select AddressBookName,FirstName,LastName from Contacts where AddressBookName=@AddressBook order by FirstName";
-                    con.Open();
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("AddressBook", addressbookname);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
+                            cmd.Parameters.AddWithValue("AddressBook", addressbookname);
+                            using (SqlDataReader reader = cmd.ExecuteReader())
                             {
-                                Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                                while (reader.Read())
+                                {
+                                    Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    Console.WriteLine("No Contacts in this address book");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Address book not present");
+            }
+        }
+        public void OrderByState(string addressbookname)
+        {
+            if (AddressRepo.AddressBookPresent(addressbookname))
+            {
+                if (ContactsPresentInAddBook(addressbookname))
+                {
+                    using(SqlConnection con = new SqlConnection(connectionstring))
+                    {
+                        string query = @"Select State,FirstName,LastName from Contacts where AddressBookName=@AddressBookName order by State";
+                        con.Open();
+                        using(SqlCommand cmd = new SqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("AddressBookName",addressbookname);
+                            using(SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                string CurrentState = null;
+                                while (reader.Read())
+                                {
+                                    string state=reader["State"].ToString();
+                                    if (state != CurrentState)
+                                    {
+                                        CurrentState= state;
+                                        Console.WriteLine("State: "+state);
+                                        Console.WriteLine("-----------");
+                                    }
+                                    Console.WriteLine(reader["FirstName"]+" " + reader["LastName"]);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No contacts present in this State");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Address book not present");
+            }
+        }
+        public void OrderByCity(string addressbookname)
+        {
+            if (AddressRepo.AddressBookPresent(addressbookname))
+            {
+                if (ContactsPresentInAddBook(addressbookname))
+                {
+                    using (SqlConnection con = new SqlConnection(connectionstring))
+                    {
+                        string query = @"Select City,FirstName,LastName from Contacts where AddressBookName=@AddressBookName order by City";
+                        con.Open();
+                        using (SqlCommand cmd = new SqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("AddressBookName", addressbookname);
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                string currentCity = null;
+                                while (reader.Read())
+                                {
+                                    string city = reader["City"].ToString();
+                                    if (city != currentCity)
+                                    {
+                                        currentCity = city;
+                                        Console.WriteLine("City: "+currentCity);
+                                        Console.WriteLine("-----------");
+                                    }
+                                    Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No contacts present in this City");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Address book not present");
+            }
+        }
+        public void OrderByZip(string addressbookname)
+        {
+            if (AddressRepo.AddressBookPresent(addressbookname))
+            {
+                if (ContactsPresentInAddBook(addressbookname))
+                {
+                    using (SqlConnection con = new SqlConnection(connectionstring))
+                    {
+                        string query = @"Select Zip,FirstName,LastName from Contacts where AddressBookName=@AddressBookName order by Zip";
+                        con.Open();
+                        using (SqlCommand cmd = new SqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("AddressBookName", addressbookname);
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                string currentzip = null;
+                                while (reader.Read())
+                                {
+                                    string zip = reader["Zip"].ToString();
+                                    if(zip != currentzip)
+                                    {
+                                        currentzip= zip;
+                                        Console.WriteLine("Zip "+currentzip);
+                                        Console.WriteLine("-------");
+                                    }
+                                    Console.WriteLine(reader["FirstName"] + " " + reader["LastName"]);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No contacts present in this ZipCode");
                 }
             }
             else

@@ -30,7 +30,7 @@ namespace Address_Book_ADO.NET
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("MENU");
                 Console.WriteLine("- - - - - - - - - - - - -");
-                Console.WriteLine("1.Add Address Book\n2.Delete Address Book\n3.Add contact\n4.Update Contact\n5.Delete Contact\n6.Search By City\n7.Search By State\n8.View By City\n9.View By State\n10.Count By City\n11.Count By State\n12.Order contacts by name");
+                Console.WriteLine("1.Add Address Book\n2.Delete Address Book\n3.Add contact\n4.Update Contact\n5.Delete Contact\n6.Search By City\n7.Search By State\n8.View By City\n9.View By State\n10.Count By City\n11.Count By State\n12.Order contacts by name\n13.Order contacts by City\n14.Order Contacts by State\n15.Order Contacts By ZipCode\n16.Exit\n");
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("Enter your choice");
                 int choice=Convert.ToInt32(Console.ReadLine());
@@ -117,6 +117,22 @@ namespace Address_Book_ADO.NET
                     case 12: Console.WriteLine("Enter address book name");
                         string addressbook=Console.ReadLine();
                         contactRepo.OrderByName(addressbook);
+                        break;
+                    case 13: Console.WriteLine("Enter address book name");
+                        string addressbook1=Console.ReadLine();
+                        contactRepo.OrderByCity(addressbook1);
+                        break;
+                    case 14: Console.WriteLine("Enter address book name");
+                        string addressbook2=Console.ReadLine();
+                        contactRepo.OrderByState(addressbook2);
+                        break;
+                    case 15: Console.WriteLine("Enter address book name");
+                        string addressbook3=Console.ReadLine();
+                        contactRepo.OrderByZip(addressbook3);   
+                        break;
+                    case 16: flag = false;
+                        break;
+                    default: Console.WriteLine("Invalid input");
                         break;
                 }
                 
