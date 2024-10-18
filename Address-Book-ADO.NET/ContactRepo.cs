@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System.Threading;
+using System.ComponentModel.Design;
 namespace Address_Book_ADO.NET
 {
     public class ContactRepo
@@ -17,100 +18,105 @@ namespace Address_Book_ADO.NET
 
             connectionstring = _connectionstring;
         }
+        public bool ContactPresent(string firstname,string lastname)
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = "Select count(*) from Contacts where FirstName=@FirstName and LastName=@LastName";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@FirstName",firstname);
+                    cmd.Parameters.AddWithValue("@LastName",lastname);
+                   int count=(int) cmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        
         
         public void AddContacts(string firstname,string lastname,string address,string city,string state,int zip,long phone,string email,string addressbookname)
         {
-            using (SqlConnection conn = new SqlConnection(connectionstring))
+            if (!ContactPresent(firstname, lastname))
             {
-                string query1 = @"Select count(*) from AddressBookTable where Name=@Name";
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query1, conn))
+                if (AddressRepo.AddressBookPresent(addressbookname))
                 {
-                    cmd.Parameters.AddWithValue("@Name", addressbookname);
-                    int count = (int)cmd.ExecuteScalar();
-                    if (count <= 0) { 
-                    Console.WriteLine("Address Book not found");
-                    return;
+
+                    using (SqlConnection con = new SqlConnection(connectionstring))
+                    {
+                        string query2 = "INSERT INTO Contacts (FirstName, LastName, Address, City, State, Zip, Phone, Email,AddressBookName) VALUES (@FirstName, @LastName, @Address, @City, @State, @Zip, @Phone, @Email,@AddressBookName)";
+                        con.Open();
+                        using (SqlCommand cmd = new SqlCommand(query2, con))
+                        {
+
+                            cmd.Parameters.AddWithValue("@FirstName", firstname);
+                            cmd.Parameters.AddWithValue("@LastName", lastname);
+                            cmd.Parameters.AddWithValue("@Address", address);
+                            cmd.Parameters.AddWithValue("@City", city);
+                            cmd.Parameters.AddWithValue("@State", state);
+                            cmd.Parameters.AddWithValue("@Zip", zip);
+                            cmd.Parameters.AddWithValue("@Phone", phone);
+                            cmd.Parameters.AddWithValue("@Email", email);
+                            cmd.Parameters.AddWithValue("@AddressBookName", addressbookname);
+                            cmd.ExecuteNonQuery();
+                            Console.WriteLine("Contact added successfully");
+                        }
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("Address Book not found");
                 }
             }
-            
-            using (SqlConnection con = new SqlConnection(connectionstring))
+            else
             {
-                string query2 = "INSERT INTO Contacts (FirstName, LastName, Address, City, State, Zip, Phone, Email,AddressBookName) VALUES (@FirstName, @LastName, @Address, @City, @State, @Zip, @Phone, @Email,@AddressBookName)";
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(query2, con))
-                {
-                    
-                    cmd.Parameters.AddWithValue("@FirstName",firstname);
-                    cmd.Parameters.AddWithValue("@LastName", lastname);
-                    cmd.Parameters.AddWithValue("@Address",address);
-                    cmd.Parameters.AddWithValue("@City",city);
-                    cmd.Parameters.AddWithValue("@State",state);
-                    cmd.Parameters.AddWithValue("@Zip",zip);
-                    cmd.Parameters.AddWithValue("@Phone",phone);
-                    cmd.Parameters.AddWithValue("@Email",email);
-                    cmd.Parameters.AddWithValue("@AddressBookName", addressbookname);
-                    cmd.ExecuteNonQuery();
-                    Console.WriteLine("Contact added successfully");
-                }
+                Console.WriteLine("Contact already exist");
             }
         }
         public void UpdateContact(string firstname, string lastname,string newfirstname,string newlastname, string address, string city, string state, int zip, long phone, string email,string addressbookname)
         {
-            string query1 = "Select count(*) from Contacts where FirstName=@FirstName and LastName=@LastName";
-            using(SqlConnection con=new SqlConnection(connectionstring))
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(query1, con))
+            if (ContactPresent(firstname, lastname)){
+                if (AddressRepo.AddressBookPresent(addressbookname))
                 {
-                    cmd.Parameters.AddWithValue("@FirstName", firstname);
-                    cmd.Parameters.AddWithValue("@LastName",lastname);
-                    int count = (int)cmd.ExecuteScalar();
-                    if (count <= 0)
-                    {
-                        Console.WriteLine("Contact not found");
-                        return;
-                    }
-                }
-            }
-            using (SqlConnection con = new SqlConnection(connectionstring))
-            {
-                string query2 = @"Select count(*) from AddressBookTable where Name=@Name";
-                con.Open();
-                using(SqlCommand cmd = new SqlCommand(query2, con))
-                {
-                    cmd.Parameters.AddWithValue("@Name", addressbookname);
-                    int count= (int)cmd.ExecuteScalar();
-                    if(count <= 0)
-                    {
-                        Console.WriteLine("Address book not found");
-                        return;
-                    }
-                }
-            }
-            
-            using (SqlConnection con = new SqlConnection(connectionstring))
-            {
-                string query3 = "Update Contacts set Firstname=@NewFirstName,LastName=@NewLastName,Address=@Address,City=@City,State=@State,Zip=@Zip,Phone=@Phone,Email=@Email,AddressBookName=@AddressBookName where FirstName=@FirstName and LastName=@LastName";
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(query3, con))
-                {
-                    cmd.Parameters.AddWithValue("@FirstName", firstname);
-                    cmd.Parameters.AddWithValue("@LastName", lastname);
-                    cmd.Parameters.AddWithValue("@NewFirstName", newfirstname);
-                    cmd.Parameters.AddWithValue("@NewLastName", newlastname);
-                    cmd.Parameters.AddWithValue("@Address", address);
-                    cmd.Parameters.AddWithValue("@City", city);
-                    cmd.Parameters.AddWithValue("@State", state);
-                    cmd.Parameters.AddWithValue("@Zip", zip);
-                    cmd.Parameters.AddWithValue("@Phone", phone);
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@AddressBookName",addressbookname);
-                    cmd.ExecuteNonQuery();
-                    Console.WriteLine("Contact Updated successfully");
-                }
 
+                    using (SqlConnection con = new SqlConnection(connectionstring))
+                    {
+                        string query3 = "Update Contacts set Firstname=@NewFirstName,LastName=@NewLastName,Address=@Address,City=@City,State=@State,Zip=@Zip,Phone=@Phone,Email=@Email,AddressBookName=@AddressBookName where FirstName=@FirstName and LastName=@LastName";
+                        con.Open();
+                        using (SqlCommand cmd = new SqlCommand(query3, con))
+                        {
+                            cmd.Parameters.AddWithValue("@FirstName", firstname);
+                            cmd.Parameters.AddWithValue("@LastName", lastname);
+                            cmd.Parameters.AddWithValue("@NewFirstName", newfirstname);
+                            cmd.Parameters.AddWithValue("@NewLastName", newlastname);
+                            cmd.Parameters.AddWithValue("@Address", address);
+                            cmd.Parameters.AddWithValue("@City", city);
+                            cmd.Parameters.AddWithValue("@State", state);
+                            cmd.Parameters.AddWithValue("@Zip", zip);
+                            cmd.Parameters.AddWithValue("@Phone", phone);
+                            cmd.Parameters.AddWithValue("@Email", email);
+                            cmd.Parameters.AddWithValue("@AddressBookName", addressbookname);
+                            cmd.ExecuteNonQuery();
+                            Console.WriteLine("Contact Updated successfully");
+                        }
+
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Address Book not present");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Contact not found");
             }
         }
         public void DeleteContact(string firstname, string lastname)
@@ -140,7 +146,7 @@ namespace Address_Book_ADO.NET
                     cmd.Parameters.AddWithValue("@FirstName", firstname);
                     cmd.Parameters.AddWithValue("@LastName", lastname);
                     int count=(int)cmd.ExecuteNonQuery() ;
-                    Console.WriteLine(count+ " row deleted" );
+                    Console.WriteLine((count+1)+ " row deleted" );
                     Console.WriteLine("Contact deleted successfully");
                 }
             }

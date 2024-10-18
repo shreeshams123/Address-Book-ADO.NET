@@ -30,7 +30,7 @@ namespace Address_Book_ADO.NET
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("MENU");
                 Console.WriteLine("- - - - - - - - - - - - -");
-                Console.WriteLine("1.Add Address Book\n2.Add contact\n3.Update Contact\n4.Delete Contact");
+                Console.WriteLine("1.Add Address Book\n2.Delete Address Book\n3.Add contact\n4.Update Contact\n5.Delete Contact");
                 Console.WriteLine("- - - - - - - - - - - - -");
                 Console.WriteLine("Enter your choice");
                 int choice=Convert.ToInt32(Console.ReadLine());
@@ -40,7 +40,11 @@ namespace Address_Book_ADO.NET
                         string addname= Console.ReadLine();
                         addressRepo.AddAddressBook(addname);
                         break;
-                    case 2: Console.WriteLine("Enter FirstName");
+                    case 2: Console.WriteLine("Enter the name of the addressbook");
+                        string addname1= Console.ReadLine();
+                        addressRepo.DeleteContactsFromAddressBook(addname1);
+                        break;
+                    case 3: Console.WriteLine("Enter FirstName");
                         string firstname= Console.ReadLine();
                         Console.WriteLine("Enter Lastname");
                         string lastname= Console.ReadLine();
@@ -60,7 +64,7 @@ namespace Address_Book_ADO.NET
                         string addressbookname= Console.ReadLine();
                         contactRepo.AddContacts(firstname, lastname, address, city, state, zip, phone, email,addressbookname);
                         break;
-                    case 3: Console.WriteLine("Enter the firstname of the contact to be updated");
+                    case 4: Console.WriteLine("Enter the firstname of the contact to be updated");
                         string firstname1=Console.ReadLine();
                         Console.WriteLine("Enter the lastname of the contact to update");
                         string lastname1=Console.ReadLine();
@@ -84,7 +88,7 @@ namespace Address_Book_ADO.NET
                         string addressbookname1=Console.ReadLine();
                         contactRepo.UpdateContact(firstname1 , lastname1, newfirstname,newlastname,address1,city1,state1,zip1,phone1,email1,addressbookname1);   
                         break;
-                    case 4: Console.WriteLine("Enter the firstname");
+                    case 5: Console.WriteLine("Enter the firstname");
                         string firstname2=Console.ReadLine();
                         Console.WriteLine("Enter the lastname");
                         string lastname2=Console.ReadLine();
