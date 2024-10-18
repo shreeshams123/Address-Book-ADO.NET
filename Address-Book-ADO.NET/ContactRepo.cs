@@ -272,5 +272,47 @@ namespace Address_Book_ADO.NET
                 }
             }
         }
+        public void CountByCity(string city)
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select count(*) from Contacts where City=@City";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@City", city);
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        Console.WriteLine("There are " + count + " contacts in " + city);
+                    }
+                    else
+                    {
+                        Console.WriteLine("There are no contacts in this city");
+                    }
+                }
+            }
+        }
+        public void CountByState(string state)
+        {
+            using (SqlConnection con = new SqlConnection(connectionstring))
+            {
+                string query = @"Select count(*) from Contacts where State=@State";
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@State", state);
+                    int count = (int)cmd.ExecuteScalar();
+                    if (count > 0)
+                    {
+                        Console.WriteLine("There are " + count + " contact in " + state);
+                    }
+                    else
+                    {
+                        Console.WriteLine("There are no contacts in this state");
+                    }
+                }
+            }
+        }
     }
 }
